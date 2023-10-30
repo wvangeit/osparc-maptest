@@ -11,6 +11,11 @@ def main():
     output1_dir = pathlib.Path(
         os.environ["OUTPUT_FOLDER"]) / pathlib.Path('output_1')
 
+    for i in range(6):
+        dir = pathlib.Path(
+            os.environ["OUTPUT_FOLDER"]) / pathlib.Path(f'output_{i}')
+        dir.mkdir()
+
     print(f'Output 1 directory: {output1_dir}')
 
     output1_dir.mkdir()
