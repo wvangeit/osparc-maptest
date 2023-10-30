@@ -13,6 +13,8 @@ def main():
 
     print(f'Output 1 directory: {output1_dir}')
 
+    output1_dir.mkdir()
+
     params = {"gnabar_hh": 0.1, "gkbar_hh": 0.03}
     with open(output1_dir / 'params.json', 'w') as params_file:
         json.dump(params, params_file)
