@@ -8,13 +8,8 @@ def main():
 
     print("Starting parameter creator")
 
-    for i in range(6):
-        dir = pathlib.Path(
-            os.environ["OUTPUT_FOLDER"]) / pathlib.Path(f'output_{i}')
-        dir.mkdir()
-
     output1_dir = pathlib.Path(
-        os.environ["OUTPUT_FOLDER"]) / pathlib.Path('output_1')
+        os.environ["DY_SIDECAR_PATH_OUTPUTS"]) / pathlib.Path('output_1')
 
     print(f'Output 1 directory: {output1_dir}')
 
