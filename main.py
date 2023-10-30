@@ -22,9 +22,9 @@ def main():
 
     for engine_i in range(1, n_engines + 1):
         params = {
-            "gnabar_hh": float(np.random.uniform(
-                0.1, 0.01)), "gkbar_hh": float(np.random.uniform(
-                    0.01, 0.001))}
+            "gnabar_hh": 0.1 + float(np.random.uniform(
+                0.0011, 0.0015)), "gkbar_hh": 0.03 + float(np.random.uniform(
+                    0.0011, 0.0015))}
         print(f"Generated: {params} for engine {engine_i}")
         with open(output_dirs[engine_i] / 'params.json', 'w') as params_file:
             print(f"{output_dirs[engine_i].resolve()}")
