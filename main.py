@@ -14,7 +14,7 @@ def main():
     print(f'Output 1 directory: {output1_dir}')
 
     # params = {"gnabar_hh": 0.1, "gkbar_hh": 0.03}
-    params = {"gnabar_hh": 0.1, "gkbar_hh": 0.02}
+    params = {"gnabar_hh": 0.1, "gkbar_hh": 0.01}
     with open(output1_dir / 'params.json', 'w') as params_file:
         json.dump(params, params_file)
 
