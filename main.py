@@ -9,7 +9,7 @@ def main():
     print("Starting parameter creator")
 
     output1_dir = pathlib.Path(
-        os.environ["DY_SIDECAR_PATH_OUTPUTS"]) / pathlib.Path('output_1')
+        os.environ["OUTPUTS"]) / pathlib.Path('output_1')
 
     print(f'Output 1 directory: {output1_dir}')
 
