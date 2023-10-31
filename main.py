@@ -56,10 +56,10 @@ class ParamCreator:
                 if engine_info['id'] not in self.engine_ids:
                     self.register_engine(engine_info)
 
-                if engine_info['status'] == 'Ready' and \
+                if engine_info['status'] == 'ready' and \
                         not self.engine_submitted[engine_info['id']]:
                     self.create_run_task(engine_info)
-                elif engine_info['status'] == 'Finished':
+                elif engine_info['status'] == 'submitted':
                     self.get_payload(engine_info['id'])
 
     def get_payload(self, engine_info):
@@ -92,7 +92,7 @@ class ParamCreator:
         engine_id = engine_info['id']
         engine_status = engine_info['status']
 
-        if engine_status != 'Ready':
+        if engine_status != 'ready':
             raise ValueError("Trying to register an engine that is not ready")
 
         self.engine_ids.append(engine_id)
@@ -136,7 +136,7 @@ class ParamCreator:
 
         engine_command_dict = master_dict['engines'][engine_id]
 
-        if engine_dict['status'] != 'Ready':
+        if engine_dict['status'] != 'ready':
             raise ValueError("Trying to run on engine that is not ready")
 
         engine_command_dict['task'] = task
