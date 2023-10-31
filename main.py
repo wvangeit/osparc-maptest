@@ -58,7 +58,7 @@ class ParamCreator:
 
                 if engine_info['status'] == 'Ready' and \
                         not self.engine_submitted[engine_info['id']]:
-                    self.create_run_task(engine_info['id'])
+                    self.create_run_task(engine_info)
                 elif engine_info['status'] == 'Finished':
                     self.get_payload(engine_info['id'])
 
@@ -71,7 +71,9 @@ class ParamCreator:
 
         master_dict = self.read_master_dict()
 
-        master_dict['engines'][engine_info['id']]['task'] = 'Get ready'
+        master_dict['engines'][
+            engine_info['id']]['task'] = {
+            'command': 'get ready'}
 
         self.write_master_dict(master_dict)
 
@@ -119,9 +121,10 @@ class ParamCreator:
 
         print("Created new master.json: {master_dict}")
 
-    def create_run_task(self, engine_id):
+    def create_run_task(self, engine_dict):
         """Create dict with run info"""
 
+        engine_id = engine_dict['id']
         params = {
             "gnabar_hh": 0.1 + float(np.random.uniform(
                 0.0011, 0.0015)), "gkbar_hh": 0.03 + float(np.random.uniform(
@@ -131,12 +134,12 @@ class ParamCreator:
 
         master_dict = self.read_master_dict()
 
-        engine_dict = master_dict['engines'][engine_id]
+        engine_command_dict = master_dict['engines'][engine_id]
 
         if engine_dict['status'] != 'Ready':
             raise ValueError("Trying to run on engine that is not ready")
 
-        engine_dict['task'] = task
+        engine_command_dict['task'] = task
 
         self.write_master_dict(master_dict)
 
