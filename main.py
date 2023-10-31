@@ -34,7 +34,7 @@ class ParamCreator:
     def start(self):
         print("Starting parameter creator")
 
-        self.int_master_dict()
+        self.init_master_dict()
         for input_dir in self.input_dirs:
             engine_fn = input_dir / 'engine.json'
             if engine_fn.exists():
