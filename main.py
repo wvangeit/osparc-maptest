@@ -27,8 +27,8 @@ class ParamCreator:
             os.environ["DY_SIDECAR_PATH_OUTPUTS"])
 
         self.input_dirs = [
-            self.main_inputs_dir /
-            f'input_{i}' for i in range(
+            self.main_inputs_dir
+            / f'input_{i}' for i in range(
                 1,
                 5)]
 
@@ -69,18 +69,18 @@ class ParamCreator:
                         f'Received result {payload} '
                         f'from [engine_info["id"]')
 
-                    self.get_engine_ready(engine_info['id'])
+                    self.set_engine_ready(engine_info['id'])
 
     def get_payload(self, engine_info):
         """Get payload from engine"""
 
         return engine_info["payload"]
 
-    def get_engine_ready(self, engine_id):
+    def set_engine_ready(self, engine_id):
         master_dict = self.read_master_dict()
 
-        master_dict['engines'][engine_id]['task'] = {
-            'command': 'get ready'}
+        master_dict['engines'][engine_id] = {'task':
+                                             {'command': 'get ready'}}
 
         self.write_master_dict(master_dict)
 
@@ -104,7 +104,7 @@ class ParamCreator:
             self.engine_submitted[engine_id] = False
         elif engine_status == 'submitted':
             self.engine_ids.append(engine_id)
-            self.get_engine_ready(engine_info['id'])
+            self.set_engine_ready(engine_info['id'])
         else:
             raise ValueError(
                 "Trying to register an engine that is not ready, "
