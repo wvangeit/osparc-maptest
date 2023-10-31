@@ -79,7 +79,10 @@ class ParamCreator:
 
     def get_engine_info(self, engine_fn):
         with open(engine_fn) as engine_file:
-            return json.load(engine_file)
+            engine_info = json.load(engine_file)
+
+        print(f"Master received engine info: {engine_info}", flush=True)
+        return engine_info
 
     def register_engine(self, engine_info):
         """Register engines"""
