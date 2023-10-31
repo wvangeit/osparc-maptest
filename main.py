@@ -23,8 +23,8 @@ class ParamCreator:
             os.environ["DY_SIDECAR_PATH_OUTPUTS"])
 
         self.input_dirs = [
-            self.main_inputs_dir
-            / f'input_{i}' for i in range(
+            self.main_inputs_dir /
+            f'input_{i}' for i in range(
                 1,
                 5)]
 
@@ -93,7 +93,9 @@ class ParamCreator:
         engine_status = engine_info['status']
 
         if engine_status != 'ready':
-            raise ValueError("Trying to register an engine that is not ready")
+            raise ValueError(
+                "Trying to register an engine that is not ready, "
+                f"status: {engine_status}")
 
         self.engine_ids.append(engine_id)
         self.engine_submitted[engine_id] = False
