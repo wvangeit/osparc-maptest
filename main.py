@@ -23,8 +23,8 @@ class ParamCreator:
             os.environ["DY_SIDECAR_PATH_OUTPUTS"])
 
         self.input_dirs = [
-            self.main_inputs_dir /
-            f'input_{i}' for i in range(
+            self.main_inputs_dir
+            / f'input_{i}' for i in range(
                 1,
                 5)]
 
@@ -36,7 +36,7 @@ class ParamCreator:
     def start(self):
         print("Starting parameter creator")
 
-        self.init_master_dict()
+        self.init_master_file()
         for input_dir in self.input_dirs:
             engine_fn = input_dir / 'engine.json'
             if engine_fn.exists():
@@ -60,24 +60,27 @@ class ParamCreator:
                         not self.engine_submitted[engine_info['id']]:
                     self.create_run_task(engine_info)
                 elif engine_info['status'] == 'submitted':
-                    self.get_payload(engine_info)
+                    payload = self.get_payload(engine_info)
+                    print(
+                        f'Received result {payload} '
+                        f'from [engine_info["id"]')
+
+                    self.get_engine_ready(engine_info['id'])
 
     def get_payload(self, engine_info):
         """Get payload from engine"""
 
-        print(
-            f'Received result {engine_info["payload"]} '
-            f'from [engine_info["id"]')
+        return engine_info["payload"]
 
+    def get_engine_ready(self, engine_id):
         master_dict = self.read_master_dict()
 
-        master_dict['engines'][
-            engine_info['id']]['task'] = {
+        master_dict['engines'][engine_id]['task'] = {
             'command': 'get ready'}
 
         self.write_master_dict(master_dict)
 
-        self.engine_submitted[engine_info['id']] = False
+        self.engine_submitted[engine_id] = False
 
     def get_engine_info(self, engine_fn):
         with open(engine_fn) as engine_file:
@@ -92,13 +95,16 @@ class ParamCreator:
         engine_id = engine_info['id']
         engine_status = engine_info['status']
 
-        if engine_status != 'ready':
+        if engine_status == 'ready':
+            self.engine_ids.append(engine_id)
+            self.engine_submitted[engine_id] = False
+        elif engine_status == 'submitted':
+            self.engine_ids.append(engine_id)
+            self.get_engine_ready(engine_info['id'])
+        else:
             raise ValueError(
                 "Trying to register an engine that is not ready, "
                 f"status: {engine_status}")
-
-        self.engine_ids.append(engine_id)
-        self.engine_submitted[engine_id] = False
 
         master_dict = self.read_master_dict()
         master_dict['engines'][engine_id] = {}
@@ -106,7 +112,7 @@ class ParamCreator:
 
         print(f"Registered engine: {engine_id}")
 
-    def init_master_dict(self):
+    def init_master_file(self):
 
         master_dict = {'engines': {}, 'id': self.id}
         self.write_master_dict(master_dict)
