@@ -3,6 +3,7 @@ import pathlib
 import json
 import numpy as np
 import time
+import uuid
 
 
 def main():
@@ -15,14 +16,15 @@ class ParamCreator:
 
     def __init__(self):
         """Constructor"""
+        self.id = str(uuid.uuid4())
         self.main_inputs_dir = pathlib.Path(
             os.environ["DY_SIDECAR_PATH_INPUTS"])
         self.main_outputs_dir = pathlib.Path(
             os.environ["DY_SIDECAR_PATH_OUTPUTS"])
 
         self.input_dirs = [
-            self.main_inputs_dir /
-            f'input_{i}' for i in range(
+            self.main_inputs_dir
+            / f'input_{i}' for i in range(
                 1,
                 5)]
 
@@ -110,7 +112,7 @@ class ParamCreator:
 
     def write_master_dict(self, master_dict):
         with open(self.master_file_path, 'w') as master_file:
-            json.dump(master_dict, master_file)
+            json.dump(master_dict, master_file, indent=4)
 
         print("Created new master.json: {master_dict}")
 
