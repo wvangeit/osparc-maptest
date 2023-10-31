@@ -4,6 +4,10 @@ import json
 import numpy as np
 import time
 import uuid
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("paramstest main")
 
 
 def main():
@@ -23,8 +27,8 @@ class ParamCreator:
             os.environ["DY_SIDECAR_PATH_OUTPUTS"])
 
         self.input_dirs = [
-            self.main_inputs_dir
-            / f'input_{i}' for i in range(
+            self.main_inputs_dir /
+            f'input_{i}' for i in range(
                 1,
                 5)]
 
@@ -44,7 +48,7 @@ class ParamCreator:
                     self.register_engine(json.load(engine_file))
 
         while True:
-            print("Checking engine files ...", flush=True)
+            logging.info("Checking engine files ...")
             self.check_engine_files()
             time.sleep(20)
 
