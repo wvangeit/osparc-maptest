@@ -60,7 +60,7 @@ class ParamCreator:
                         not self.engine_submitted[engine_info['id']]:
                     self.create_run_task(engine_info)
                 elif engine_info['status'] == 'submitted':
-                    self.get_payload(engine_info['id'])
+                    self.get_payload(engine_info)
 
     def get_payload(self, engine_info):
         """Get payload from engine"""
