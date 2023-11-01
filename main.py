@@ -79,7 +79,7 @@ class ParamCreator:
             task = {'command': 'run', 'id': id, 'payload': params}
             self.torun_tasks.append(task)
 
-        print(f"Created tasks: {self.torun_tasks}")
+        logging.info(f"Created tasks: {self.torun_tasks}")
 
     def write_map_output(self):
 
