@@ -35,8 +35,8 @@ class ParamCreator:
             os.environ["DY_SIDECAR_PATH_OUTPUTS"])
 
         self.input_dirs = [
-            self.main_inputs_dir /
-            f'input_{i}' for i in range(
+            self.main_inputs_dir
+            / f'input_{i}' for i in range(
                 2,
                 5)]
 
@@ -61,9 +61,7 @@ class ParamCreator:
                     self.register_engine(json.load(engine_file))
 
         while True:
-            logging.info("Checking map files ...")
             self.check_map_files()
-            logging.info("Checking engine files ...")
             self.check_engine_files()
             time.sleep(20)
 
@@ -96,6 +94,8 @@ class ParamCreator:
 
     def check_map_files(self):
 
+        logging.info("Checking map files ...")
+
         if self.status == 'ready':
             if self.map_input_path.exists():
                 self.populate_tasklist()
@@ -107,6 +107,9 @@ class ParamCreator:
             self.status = 'ready'
 
     def check_engine_files(self):
+
+        logging.info("Checking engine files ...")
+
         for input_dir in self.input_dirs:
             engine_fn = input_dir / 'engine.json'
             if engine_fn.exists():
@@ -130,7 +133,6 @@ class ParamCreator:
     def process_engine_payload(self, engine_info):
         """Get payload from engine"""
 
-        engine_info['']
         task_id = engine_info['task_id']
 
         for i, task in enumerate(self.running_tasks):
