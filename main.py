@@ -88,7 +88,7 @@ class ParamCreator:
             obj = task['payload']
             objs.append(obj)
 
-        with open(self.map_output_path) as map_output_file:
+        with open(self.map_output_path, 'w') as map_output_file:
             json.dump(objs, map_output_file, indent=4)
 
         self.finished_tasks = []
