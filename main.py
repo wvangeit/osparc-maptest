@@ -103,7 +103,7 @@ class ParamCreator:
                 self.status = 'computing'
         elif self.status == 'computing' and \
                 len(self.torun_tasks) == 0 and \
-                len(self.running_task) == 0:
+                len(self.running_tasks) == 0:
             self.write_map_output()
             self.status = 'ready'
 
