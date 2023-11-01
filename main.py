@@ -83,7 +83,7 @@ class ParamCreator:
     def write_map_output(self):
 
         objs = []
-        self.finished_tasks.sort(key=lambda task: task['id'])
+        self.finished_tasks.sort(key=lambda task: task['task_id'])
         for task in self.finished_tasks:
             obj = task['payload']
             objs.append(obj)
