@@ -137,7 +137,7 @@ class ParamCreator:
 
         for i, task in enumerate(self.running_tasks):
             if task['task_id'] == task_id:
-                self.finished_task.append(task)
+                self.finished_tasks.append(task)
                 self.running_tasks.remove(i)
 
     def set_engine_ready(self, engine_id):
