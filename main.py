@@ -55,11 +55,11 @@ class ParamCreator:
         logging.info("Starting parameter creator")
 
         self.init_master_file()
-        for input_dir in self.input_dirs:
-            engine_fn = input_dir / 'engine.json'
-            if engine_fn.exists():
-                with open(engine_fn) as engine_file:
-                    self.register_engine(json.load(engine_file))
+        # for input_dir in self.input_dirs:
+        #    engine_fn = input_dir / 'engine.json'
+        #    if engine_fn.exists():
+        #        with open(engine_fn) as engine_file:
+        #            self.register_engine(json.load(engine_file))
 
         while True:
             self.check_map_files()
@@ -218,6 +218,7 @@ class ParamCreator:
         self.write_master_dict(master_dict)
 
         self.engine_submitted[engine_id] = True
+        logger.info(f"Sent task {task} to engine {engine_id}")
 
 
 if __name__ == '__main__':
