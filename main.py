@@ -123,7 +123,7 @@ class ParamCreator:
                         self.submit_task(engine_info)
                 elif engine_info['status'] == 'submitted':
                     self.process_engine_payload(engine_info)
-                    payload = self.get_payload(engine_info)
+                    payload = self.process_engin_payload(engine_info)
                     print(
                         f'Received result {payload} '
                         f'from [engine_info["id"]')
