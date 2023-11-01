@@ -83,9 +83,11 @@ class ParamCreator:
     def write_map_output(self):
 
         objs = []
+
         self.finished_tasks.sort(key=lambda task: task['task_id'])
         for task in self.finished_tasks:
-            obj = task['payload']
+            obj = [task['result']['step1.Spikecount'],
+                   task['result']['step2.Spikecount']]
             objs.append(obj)
 
         with open(self.map_output_path, 'w') as map_output_file:
@@ -124,22 +126,23 @@ class ParamCreator:
                         self.submit_task(engine_info)
                 elif engine_info['status'] == 'submitted':
                     self.process_engine_payload(engine_info)
-                    payload = self.process_engine_payload(engine_info)
-                    logging.info(
-                        f'Received result {payload} '
-                        f'from [engine_info["id"]')
-
                     self.set_engine_ready(engine_info['id'])
 
     def process_engine_payload(self, engine_info):
         """Get payload from engine"""
 
         task_id = engine_info['task_id']
+        payload = engine_info['payload']
 
         for task in self.running_tasks:
             if task['task_id'] == task_id:
+                task['result'] = payload
                 self.finished_tasks.append(task)
                 self.running_tasks.remove(task)
+
+        logging.info(
+            f'Received result {payload} '
+            f'from {engine_info["id"]}')
 
     def set_engine_ready(self, engine_id):
         master_dict = self.read_master_dict()
