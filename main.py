@@ -72,11 +72,11 @@ class ParamCreator:
         with open(self.map_input_path) as map_input_file:
             map_input = json.load(map_input_file)
 
-        for id, param_values in enumerate(map_input):
+        for task_id, param_values in enumerate(map_input):
             params = {
                 "gnabar_hh": param_values[0],
                 "gkbar_hh": param_values[1]}
-            task = {'command': 'run', 'id': id, 'payload': params}
+            task = {'command': 'run', 'task_id': task_id, 'payload': params}
             self.torun_tasks.append(task)
 
         logging.info(f"Created tasks: {self.torun_tasks}")
