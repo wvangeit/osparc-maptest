@@ -155,7 +155,7 @@ class ParamCreator:
         with open(engine_fn) as engine_file:
             engine_info = json.load(engine_file)
 
-        logging.info(f"Master received engine info: {engine_info}", flush=True)
+        logging.info(f"Master received engine info: {engine_info}")
         return engine_info
 
     def register_engine(self, engine_info):
