@@ -1,16 +1,24 @@
 import os
 import pathlib
 import json
-import numpy as np
 import time
 import uuid
 import logging
+import threading
+
+import opt
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("paramstest main")
 
 
 def main():
+
+    optimizer = opt.Optimizer()
+
+    opt_thread = threading.Thread(target=optimizer.start)
+    opt_thread.start()
+
     param_creator = ParamCreator()
 
     param_creator.start()
@@ -27,15 +35,20 @@ class ParamCreator:
             os.environ["DY_SIDECAR_PATH_OUTPUTS"])
 
         self.input_dirs = [
-            self.main_inputs_dir
-            / f'input_{i}' for i in range(
-                1,
+            self.main_inputs_dir /
+            f'input_{i}' for i in range(
+                2,
                 5)]
 
+        self.map_input_path = pathlib.Path('./params.json')
         self.output_dir = self.main_outputs_dir / 'output_1'
         self.master_file_path = self.output_dir / 'master.json'
         self.engine_ids = []
         self.engine_submitted = {}
+        self.status = 'ready'
+        self.torun_tasks = []
+        self.running_tasks = []
+        self.finished_tasks = []
 
     def start(self):
         print("Starting parameter creator")
@@ -48,9 +61,50 @@ class ParamCreator:
                     self.register_engine(json.load(engine_file))
 
         while True:
+            logging.info("Checking map files ...")
+            self.check_map_files()
             logging.info("Checking engine files ...")
             self.check_engine_files()
             time.sleep(20)
+
+    def populate_tasklist(self):
+
+        with open(self.map_input_path) as map_input_file:
+            map_input = json.load(map_input_file)
+
+        for id, param_values in enumerate(map_input):
+            params = {
+                "gnabar_hh": param_values[0],
+                "gkbar_hh": param_values[1]}
+            task = {'command': 'run', 'id': id, 'payload': params}
+            self.torun_tasks.append(task)
+
+        print(f"Created tasks: {self.torun_tasks}")
+
+    def write_map_output(self):
+
+        objs = []
+        self.finished_tasks.sort(key=lambda task: task['id'])
+        for task in self.finished_tasks:
+            obj = task['payload']
+            objs.append(obj)
+
+        with open(self.map_output_path) as map_output_file:
+            json.dump(objs, map_output_file, indent=4)
+
+        self.finished_tasks = []
+
+    def check_map_files(self):
+
+        if self.status == 'ready':
+            if self.map_input_path.exists():
+                self.populate_tasklist()
+                self.status = 'computing'
+        elif self.status == 'computing' and \
+                len(self.torun_tasks) == 0 and \
+                len(self.running_task) == 0:
+            self.write_map_output()
+            self.status = 'ready'
 
     def check_engine_files(self):
         for input_dir in self.input_dirs:
@@ -62,8 +116,10 @@ class ParamCreator:
 
                 if engine_info['status'] == 'ready' and \
                         not self.engine_submitted[engine_info['id']]:
-                    self.create_run_task(engine_info)
+                    if len(self.torun_tasks) != 0:
+                        self.submit_task(engine_info)
                 elif engine_info['status'] == 'submitted':
+                    self.process_engine_payload(engine_info)
                     payload = self.get_payload(engine_info)
                     print(
                         f'Received result {payload} '
@@ -71,10 +127,16 @@ class ParamCreator:
 
                     self.set_engine_ready(engine_info['id'])
 
-    def get_payload(self, engine_info):
+    def process_engine_payload(self, engine_info):
         """Get payload from engine"""
 
-        return engine_info["payload"]
+        engine_info['']
+        task_id = engine_info['task_id']
+
+        for i, task in enumerate(self.running_tasks):
+            if task['task_id'] == task_id:
+                self.finished_task.append(task)
+                self.running_tasks.remove(i)
 
     def set_engine_ready(self, engine_id):
         master_dict = self.read_master_dict()
@@ -133,16 +195,13 @@ class ParamCreator:
 
         print("Created new master.json: {master_dict}")
 
-    def create_run_task(self, engine_dict):
+    def submit_task(self, engine_dict):
         """Create dict with run info"""
 
         engine_id = engine_dict['id']
-        params = {
-            "gnabar_hh": 0.1 + float(np.random.uniform(
-                0.0011, 0.0015)), "gkbar_hh": 0.03 + float(np.random.uniform(
-                    0.0011, 0.0015))}
 
-        task = {'command': 'run', 'payload': params}
+        task = self.torun_tasks.pop()
+        self.running_tasks.append(task)
 
         master_dict = self.read_master_dict()
 
