@@ -136,10 +136,10 @@ class ParamCreator:
 
         task_id = engine_info['task_id']
 
-        for i, task in enumerate(self.running_tasks):
+        for task in self.running_tasks:
             if task['task_id'] == task_id:
                 self.finished_tasks.append(task)
-                self.running_tasks.remove(i)
+                self.running_tasks.remove(task)
 
     def set_engine_ready(self, engine_id):
         master_dict = self.read_master_dict()
