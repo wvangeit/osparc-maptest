@@ -48,6 +48,7 @@ class FileMap:
                 with open(self.output_file_path) as output_file:
                     objs = json.load(output_file)
                 self.output_file_path.unlink()
+                self.input_file_path.unlink()
                 print('Returning objectives')
                 return objs
             else:
