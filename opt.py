@@ -75,10 +75,11 @@ class Optimizer:
             params=self.params, objectives=self.objectives)
 
     def start(self):
+        print("Starting optimization")
         map = FileMap(pathlib.Path('params.json'), pathlib.Path('objs.json'))
         optimisation = bpopt.optimisations.DEAPOptimisation(
             evaluator=self.evaluator,
-            offspring_size=10,
+            offspring_size=2,
             map_function=map.map_function)
 
         final_pop, hall_of_fame, logs, hist = optimisation.run(max_ngen=10)
