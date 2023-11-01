@@ -75,7 +75,7 @@ class Optimizer:
             params=self.params, objectives=self.objectives)
 
     def start(self):
-        map = FileMap(pathlib.Path('params.json'), pathlib.Path('obj.json'))
+        map = FileMap(pathlib.Path('params.json'), pathlib.Path('objs.json'))
         optimisation = bpopt.optimisations.DEAPOptimisation(
             evaluator=self.evaluator,
             offspring_size=10,

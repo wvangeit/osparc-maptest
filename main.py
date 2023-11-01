@@ -41,6 +41,7 @@ class ParamCreator:
                 5)]
 
         self.map_input_path = pathlib.Path('./params.json')
+        self.map_output_path = pathlib.Path('./objs.json')
         self.output_dir = self.main_outputs_dir / 'output_1'
         self.master_file_path = self.output_dir / 'master.json'
         self.engine_ids = []
@@ -51,7 +52,7 @@ class ParamCreator:
         self.finished_tasks = []
 
     def start(self):
-        print("Starting parameter creator")
+        logging.info("Starting parameter creator")
 
         self.init_master_file()
         for input_dir in self.input_dirs:
@@ -123,8 +124,8 @@ class ParamCreator:
                         self.submit_task(engine_info)
                 elif engine_info['status'] == 'submitted':
                     self.process_engine_payload(engine_info)
-                    payload = self.process_engin_payload(engine_info)
-                    print(
+                    payload = self.process_engine_payload(engine_info)
+                    logging.info(
                         f'Received result {payload} '
                         f'from [engine_info["id"]')
 
@@ -154,7 +155,7 @@ class ParamCreator:
         with open(engine_fn) as engine_file:
             engine_info = json.load(engine_file)
 
-        print(f"Master received engine info: {engine_info}", flush=True)
+        logging.info(f"Master received engine info: {engine_info}", flush=True)
         return engine_info
 
     def register_engine(self, engine_info):
@@ -178,7 +179,7 @@ class ParamCreator:
         master_dict['engines'][engine_id] = {}
         self.write_master_dict(master_dict)
 
-        print(f"Registered engine: {engine_id}")
+        logging.info(f"Registered engine: {engine_id}")
 
     def init_master_file(self):
 
@@ -195,7 +196,7 @@ class ParamCreator:
         with open(self.master_file_path, 'w') as master_file:
             json.dump(master_dict, master_file, indent=4)
 
-        print("Created new master.json: {master_dict}")
+        logging.info("Created new master.json: {master_dict}")
 
     def submit_task(self, engine_dict):
         """Create dict with run info"""
