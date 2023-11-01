@@ -5,7 +5,6 @@ import json
 import bluepyopt as bpopt
 
 
-
 def main():
     """Main"""
     optimizer = Optimizer()
@@ -66,10 +65,9 @@ class Optimizer:
     def __init__(self):
         self.params = [
             bpopt.parameters.Parameter(
-                f'param{i}',
-                bounds=[
-                    0,
-                    1]) for i in range(2)]
+                'gnabar_hh', bounds=[0.05, 0.125]),
+            bpopt.parameters.Parameter(
+                'gkbar_hh', bounds=[0.01, 0.075])]
         self.objectives = [
             bpopt.objectives.Objective(f'obj{i}') for i in range(2)]
 
