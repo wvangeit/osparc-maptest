@@ -4,20 +4,12 @@ import json
 import time
 import uuid
 import logging
-import threading
-
-import opt
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("paramstest main")
 
 
 def main():
-
-    optimizer = opt.Optimizer()
-
-    opt_thread = threading.Thread(target=optimizer.start)
-    opt_thread.start()
 
     param_creator = ParamCreator()
 
@@ -37,11 +29,12 @@ class ParamCreator:
         self.input_dirs = [
             self.main_inputs_dir
             / f'input_{i}' for i in range(
-                2,
+                3,
                 5)]
 
-        self.map_input_path = pathlib.Path('./params.json')
-        self.map_output_path = pathlib.Path('./objs.json')
+        self.map_input_path = self.main_inputs_dir / 'input_2' / 'params.json'
+        self.map_output_path = \
+            self.main_outputs_dir / 'outputs_1' / 'objs.json'
         self.output_dir = self.main_outputs_dir / 'output_1'
         self.master_file_path = self.output_dir / 'master.json'
         self.engine_ids = []
@@ -52,19 +45,22 @@ class ParamCreator:
         self.finished_tasks = []
 
     def start(self):
-        logging.info("Starting parameter creator")
+        logging.info("Starting mapping function")
 
         self.init_master_file()
-        # for input_dir in self.input_dirs:
-        #    engine_fn = input_dir / 'engine.json'
-        #    if engine_fn.exists():
-        #        with open(engine_fn) as engine_file:
-        #            self.register_engine(json.load(engine_file))
-
+        self.init_engine_files()
         while True:
             self.check_map_files()
             self.check_engine_files()
             time.sleep(20)
+
+    def init_engine_files(self):
+
+        for input_dir in self.input_dirs:
+            engine_fn = input_dir / 'engine.json'
+            if engine_fn.exists():
+                # Deleting engine file, if engine exists it will recreate it
+                engine_fn.unlink()
 
     def populate_tasklist(self):
 
