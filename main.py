@@ -36,7 +36,7 @@ class ParamCreator:
 
         self.map_input_path = self.main_inputs_dir / 'input_2' / 'params.json'
         self.map_output_path = \
-            self.main_outputs_dir / 'outputs_1' / 'objs.json'
+            self.main_outputs_dir / 'outputs_2' / 'objs.json'
         self.output_dir = self.main_outputs_dir / 'output_1'
         self.master_file_path = self.output_dir / 'master.json'
         self.engine_ids = []
