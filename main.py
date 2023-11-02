@@ -78,7 +78,7 @@ class ParamCreator:
 
         with open(self.map_input_path) as map_input_file:
             map_input = json.load(map_input_file)
-        map_input_file.unlink()
+        self.map_input_path.unlink()
 
         for task_id, param_values in enumerate(map_input):
             params = {
