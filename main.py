@@ -8,6 +8,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("paramstest main")
 
+DEFAULT_POLLING_WAIT = 1  # seconds
+
 
 def main():
 
@@ -27,8 +29,8 @@ class ParamCreator:
             os.environ["DY_SIDECAR_PATH_OUTPUTS"])
 
         self.input_dirs = [
-            self.main_inputs_dir
-            / f'input_{i}' for i in range(
+            self.main_inputs_dir /
+            f'input_{i}' for i in range(
                 3,
                 5)]
 
@@ -44,15 +46,24 @@ class ParamCreator:
         self.running_tasks = []
         self.finished_tasks = []
 
-    def start(self):
+    def start(self, polling_wait=DEFAULT_POLLING_WAIT):
         logging.info("Starting mapping function")
 
         self.init_master_file()
         self.init_engine_files()
+        polling_counter = 0
         while True:
+            if polling_counter % 20 == 0:
+                logging.info("Checking map files ...")
             self.check_map_files()
+
+            if polling_counter % 20 == 0:
+                logging.info("Checking engine files ...")
             self.check_engine_files()
-            time.sleep(20)
+
+            time.sleep(polling_wait)
+
+            polling_counter += 1
 
     def init_engine_files(self):
 
@@ -93,8 +104,6 @@ class ParamCreator:
 
     def check_map_files(self):
 
-        logging.info("Checking map files ...")
-
         if self.status == 'ready':
             if self.map_input_path.exists():
                 self.populate_tasklist()
@@ -106,8 +115,6 @@ class ParamCreator:
             self.status = 'ready'
 
     def check_engine_files(self):
-
-        logging.info("Checking engine files ...")
 
         for input_dir in self.input_dirs:
             engine_fn = input_dir / 'engine.json'
