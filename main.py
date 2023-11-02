@@ -76,6 +76,10 @@ class ParamCreator:
 
     def populate_tasklist(self):
 
+        self.torun_tasks = []
+        self.running_tasks = []
+        self.finished_tasks = []
+
         with open(self.map_input_path) as map_input_file:
             map_input = json.load(map_input_file)
         self.map_input_path.unlink()
