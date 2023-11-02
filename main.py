@@ -29,8 +29,8 @@ class ParamCreator:
             os.environ["DY_SIDECAR_PATH_OUTPUTS"])
 
         self.input_dirs = [
-            self.main_inputs_dir /
-            f'input_{i}' for i in range(
+            self.main_inputs_dir
+            / f'input_{i}' for i in range(
                 3,
                 5)]
 
@@ -54,7 +54,8 @@ class ParamCreator:
         polling_counter = 0
         while True:
             if polling_counter % 20 == 0:
-                logging.info("Checking map files ...")
+                logging.info("Checking map file at "
+                             f"{self.map_input_path.resolve()}")
             self.check_map_files()
 
             if polling_counter % 20 == 0:
@@ -129,6 +130,7 @@ class ParamCreator:
                         self.submit_task(engine_info)
                 elif engine_info['status'] == 'submitted':
                     self.process_engine_payload(engine_info)
+                    engine_fn.unlink()
                     self.set_engine_ready(engine_info['id'])
 
     def process_engine_payload(self, engine_info):
